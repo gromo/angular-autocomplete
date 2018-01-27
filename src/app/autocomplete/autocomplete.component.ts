@@ -1,5 +1,6 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     providers: [
@@ -22,22 +23,40 @@ export class AutocompleteComponent implements ControlValueAccessor {
     selectedIndex: number = -1;
     value: string = '';
 
-    getMatches(value: any): string[] {
-        // load items for autocomplete
+    getMatches(value: string): string[] {
         if (!this.source || value == null || value.length < this.minlength) {
             return [];
         }
-        value = value.toLowerCase();
-        return this.source.filter(v => v.toLowerCase().match(value));
+        if (this.source instanceof Array) {
+            value = value.toLowerCase();
+            return this.source.filter(v => v.toLowerCase().match(value));
+        }
+        if (this.source instanceof Function) {
+            let result = this.source(value);
+            if (result instanceof Array) {
+                return result;
+            }
+            if (result instanceof Observable) {
+                result.subscribe(data => {
+                    if (this.value === value) {
+                        this.matches = data;
+                        this.selectedIndex = -1;
+                    }
+                });
+            }
+        }
+        return [];
     }
 
-    onChange = (value: any) => {
-        // propagate value to parent component via ngModel
-        this.propagateValue(value);
+    hideMatches(): void {
+        this.matches = [];
+        this.selectedIndex = -1;
+    }
 
+    onChange(value: any): void {
+        this.select(value);
         this.matches = this.getMatches(value);
         this.selectedIndex = -1;
-        this.value = value;
     };
 
     onKeyDown(event: any): void {
@@ -55,9 +74,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
                     }
                     break;
                 case 'Enter':
-                    // hide autocomplete container
-                    this.matches = [];
-                    this.selectedIndex = -1;
+                    this.hideMatches();
                     break;
             }
         }
@@ -71,6 +88,15 @@ export class AutocompleteComponent implements ControlValueAccessor {
 
     registerOnTouched(fn: () => void): void {}
 
+    select(value: string, hideMatches?: boolean): void {
+        this.propagateValue(value);
+        this.value = value;
+
+        if (hideMatches) {
+            this.hideMatches();
+        }
+    }
+
     selectByIndex(index: number): void {
         if (index >= this.matches.length) {
             index = this.matches.length - 1;
@@ -82,8 +108,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
 
         // do not erase value if index = -1
         if (this.matches[index] != null) {
-            this.value = this.matches[index];
-            this.propagateValue(this.value);
+            this.select(this.matches[index]);
         }
     }
 

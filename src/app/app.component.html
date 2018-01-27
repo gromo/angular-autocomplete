@@ -1,19 +1,41 @@
 <h1>{{title}}</h1>
 
-<div>
-    <h2>Search for movie</h2>
-    <app-autocomplete [(ngModel)]="search" [minlength]="autocompleteOptions.minlength" [source]="autocompleteOptions.source"></app-autocomplete>
+<div style="left: 800px; position: absolute; top: 60px;">
+    <h2>Movies to search</h2>
+    <ul>
+        <li *ngFor="let movie of movies">{{movie}}</li>
+    </ul>
 </div>
 
-<div style="left: 400px; position: absolute; top: 0;">
-    <h2>Debug info</h2>
-    <p>Search value: <input type="text" [(ngModel)]="search"></p>
-    <p>Min length:  <input type="text" [(ngModel)]="autocompleteOptions.minlength"></p>
+<div style="height: 260px; position: relative;">
+    <h2>Search for movie (Array)</h2>
+    <app-autocomplete [(ngModel)]="optionsArray.search" [minlength]="optionsArray.minlength" [source]="optionsArray.source"></app-autocomplete>
 
-    <div *ngIf="autocompleteOptions.source.length > 0">
-        Movies:
-        <ul>
-            <li *ngFor="let movie of autocompleteOptions.source">{{movie}}</li>
-        </ul>
+    <div style="left: 400px; position: absolute; top: 24px;">
+        <h2>Debug info</h2>
+        <p>Search value: <input type="text" [(ngModel)]="optionsArray.search"></p>
+        <p>Min length:  <input type="text" [(ngModel)]="optionsArray.minlength"></p>
+    </div>
+</div>
+
+<div style="height: 260px; position: relative;">
+    <h2>Search for movie (Function:Array)</h2>
+    <app-autocomplete [(ngModel)]="optionsCallback.search" [minlength]="optionsCallback.minlength" [source]="optionsCallback.source"></app-autocomplete>
+
+    <div style="left: 400px; position: absolute; top: 24px;">
+        <h2>Debug info</h2>
+        <p>Search value: <input type="text" [(ngModel)]="optionsCallback.search"></p>
+        <p>Min length:  <input type="text" [(ngModel)]="optionsCallback.minlength"></p>
+    </div>
+</div>
+
+<div style="height: 260px; position: relative;">
+    <h2>Search for movie (Function:Observable)</h2>
+    <app-autocomplete [(ngModel)]="optionsObservable.search" [minlength]="optionsObservable.minlength" [source]="optionsObservable.source"></app-autocomplete>
+
+    <div style="left: 400px; position: absolute; top: 24px;">
+        <h2>Debug info</h2>
+        <p>Search value: <input type="text" [(ngModel)]="optionsObservable.search"></p>
+        <p>Min length:  <input type="text" [(ngModel)]="optionsObservable.minlength"></p>
     </div>
 </div>

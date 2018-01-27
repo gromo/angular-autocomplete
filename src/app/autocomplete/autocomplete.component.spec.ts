@@ -1,5 +1,7 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
+
 import {AutocompleteComponent} from './autocomplete.component';
 
 describe('AutocompleteComponent', () => {
@@ -30,11 +32,12 @@ describe('AutocompleteComponent', () => {
     });
 
     // core logic
-    it('getMatches', () => {
+    it('getMatches: basics', () => {
         expect(component.getMatches(null)).toEqual([]);     // undefined value
         expect(component.getMatches('')).toEqual([]);       // empty value
         expect(component.getMatches('AAA')).toEqual([]);    // no source
-
+    });
+    it('getMatches: source as Array', () => {
         component.minlength = 2;
         component.source = getSourceAsArray();
 
@@ -43,6 +46,49 @@ describe('AutocompleteComponent', () => {
         expect(component.getMatches('Ab')).toEqual(['AABB']);
         expect(component.getMatches('abc')).toEqual([]);    // not found
     });
+    it('getMatches: source as Function:Array', () => {
+        component.minlength = 2;
+        component.source = (value: string) => {
+            value = value.toLowerCase();
+            return getSourceAsArray().filter(v => v.toLowerCase().match(value));
+        };
+
+        expect(component.getMatches('a')).toEqual([]);      // minlength
+        expect(component.getMatches('aa')).toEqual(['AAA', 'AABB']);
+        expect(component.getMatches('Ab')).toEqual(['AABB']);
+        expect(component.getMatches('abc')).toEqual([]);    // not found
+    });
+    it('getMatches: source as Function:Observable', fakeAsync(() => {
+        component.minlength = 2;
+        component.source = (value: string) => {
+            let result = new Observable(observer => {
+                setTimeout(() => {
+                    value = value.toLowerCase();
+                    let result = getSourceAsArray().filter(v => v.toLowerCase().match(value));
+                    observer.next(result);
+                }, 500);
+            });
+            return result;
+        };
+
+        // minlength check is peformed before check for Observable
+        expect(component.getMatches('a')).toEqual([]);      // minlength
+        tick(500);
+        expect(component.matches).toEqual([]);
+
+        // everything is right when value was not changed
+        expect(component.getMatches('aa')).toEqual([]); // empty array for Observable
+        component.select('aa');
+        tick(500);
+        expect(component.matches).toEqual(['AAA', 'AABB']);
+
+        // result shouldn't be applied if value was changed
+        expect(component.getMatches('bb')).toEqual([]); // empty array for Observable
+        component.matches = ['AAA'];
+        component.select('aa');
+        tick(500);
+        expect(component.matches).toEqual(['AAA']);
+    }));
 
     it('onChange', () => {
         spyOn(component, 'propagateValue');
