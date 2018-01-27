@@ -7,20 +7,22 @@ import {Component} from '@angular/core';
 })
 export class AppComponent {
 
+    autocompleteOptions = {
+        minlength: 3,
+        source: [
+            'The Commuter',
+            'Avengers: Infinity War',
+            '12 Strong',
+            'Black Panther',
+            'Insidious: The Last Key',
+            'Den of Thieves',
+            'Proud Mary',
+            'Red Sparrow',
+            'Tomb Raider',
+            'Solo: A Star Wars Story',
+            'Venom',
+        ]
+    };
     search = '';
     title = 'Autocomplete Component';
-
-    movies: string[] = [
-        'The Commuter',
-        'Avengers: Infinity War',
-        '12 Strong',
-        'Black Panther',
-        'Insidious: The Last Key',
-        'Den of Thieves',
-        'Proud Mary',
-        'Red Sparrow',
-        'Tomb Raider',
-        'Solo: A Star Wars Story',
-        'Venom',
-    ];
 }

@@ -15,20 +15,14 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 })
 export class AutocompleteComponent implements ControlValueAccessor {
 
-    data: string[] = [
-        'The Commuter',
-        'Avengers: Infinity War',
-        '12 Strong',
-        'Black Panther',
-        'Insidious: The Last Key',
-        'Den of Thieves',
-        'Proud Mary',
-        'Red Sparrow',
-        'Tomb Raider',
-        'Solo: A Star Wars Story',
-        'Venom',
-    ];
     matches: string[] = [];
+
+    @Input()
+    minlength: number = 1;
+
+    @Input()
+    source: any;
+
     value: string;
 
     constructor() {
@@ -37,11 +31,11 @@ export class AutocompleteComponent implements ControlValueAccessor {
 
     getMatches(value: any): string[] {
         // load items for autocomplete
-        if (value == null || value === '') {
+        if (!this.source || value == null || value.length < this.minlength) {
             return [];
         }
         value = value.toLowerCase();
-        return this.data.filter(v => v.toLowerCase().match(value));
+        return this.source.filter(v => v.toLowerCase().match(value));
     }
 
     ngOnInit() {

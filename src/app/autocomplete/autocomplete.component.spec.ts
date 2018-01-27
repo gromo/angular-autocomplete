@@ -23,3 +23,13 @@ describe('AutocompleteComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+
+
+/*
+check minlength
+check getMatches
+ 
+
+
+ */
