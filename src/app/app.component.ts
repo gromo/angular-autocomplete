@@ -8,7 +8,7 @@ import {Component} from '@angular/core';
 export class AppComponent {
 
     autocompleteOptions = {
-        minlength: 3,
+        minlength: 1,
         source: [
             'The Commuter',
             'Avengers: Infinity War',

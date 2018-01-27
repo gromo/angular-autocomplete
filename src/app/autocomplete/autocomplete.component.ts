@@ -4,9 +4,9 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 @Component({
     providers: [
         {
+            multi: true,
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => AutocompleteComponent),
-            multi: true
+            useExisting: forwardRef(() => AutocompleteComponent)
         }
     ],
     selector: 'app-autocomplete',
@@ -15,19 +15,12 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 })
 export class AutocompleteComponent implements ControlValueAccessor {
 
+    @Input() minlength: number = 1;
+    @Input() source: any;
+
     matches: string[] = [];
-
-    @Input()
-    minlength: number = 1;
-
-    @Input()
-    source: any;
-
+    selectedIndex: number = -1;
     value: string;
-
-    constructor() {
-        console.log('AutocompleteComponent:constructor');
-    }
 
     getMatches(value: any): string[] {
         // load items for autocomplete
@@ -38,15 +31,36 @@ export class AutocompleteComponent implements ControlValueAccessor {
         return this.source.filter(v => v.toLowerCase().match(value));
     }
 
-    ngOnInit() {
-        console.log('AutocompleteComponent:onInit');
-    }
-
     onChange = (value: any) => {
+        // propagate value to parent component via ngModel
         this.propagateValue(value);
 
         this.matches = this.getMatches(value);
+        this.selectedIndex = -1;
+        this.value = value;
     };
+
+    onKeyDown(event: any): void {
+        if (event) {
+            switch (event.key) {
+                case 'ArrowDown':
+                    this.selectByIndex(this.selectedIndex + 1);
+                    break;
+                case 'ArrowUp':
+                    this.selectByIndex(this.selectedIndex - 1);
+
+                    // disable moving cursor to the beginning of input
+                    if (event.preventDefault) {
+                        event.preventDefault();
+                    }
+                    break;
+                case 'Enter':
+                    // hide autocomplete container
+                    this.matches = [];
+                    break;
+            }
+        }
+    }
 
     propagateValue = (_: any) => {};
 
@@ -55,6 +69,22 @@ export class AutocompleteComponent implements ControlValueAccessor {
     }
 
     registerOnTouched(fn: () => void): void {}
+
+    selectByIndex(index: number): void {
+        if (index >= this.matches.length) {
+            index = this.matches.length - 1;
+        }
+        if (index < -1) {
+            index = -1;
+        }
+        this.selectedIndex = index;
+
+        // do not erase value if index = -1
+        if (this.matches[index] != null) {
+            this.value = this.matches[index];
+            this.propagateValue(this.value);
+        }
+    }
 
     writeValue(value: any): void {
         if (value == null) {

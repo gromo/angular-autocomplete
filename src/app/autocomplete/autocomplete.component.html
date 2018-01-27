@@ -1,8 +1,10 @@
-<div>
-    <input type="text" [ngModel]="value" (ngModelChange)="onChange($event)" name="search-autocomplete">
-</div>
-<div *ngIf="matches.length > 0">
-    <ul>
-        <li *ngFor="let match of matches">{{match}}</li>
+<div class="autocomplete">
+    <input type="text" [ngModel]="value" (ngModelChange)="onChange($event)" (keydown)="onKeyDown($event)">
+    <ul class="autocomplete-container" *ngIf="matches.length > 0">
+        <li class="autocomplete-item"
+            *ngFor="let match of matches; let i = index"
+            [ngClass]="{'selected': i === selectedIndex}">
+            {{match}}
+    </li>
     </ul>
 </div>
