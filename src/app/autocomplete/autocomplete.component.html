@@ -1,3 +1,8 @@
 <div>
     <input type="text" [ngModel]="value" (ngModelChange)="onChange($event)" name="search-autocomplete">
 </div>
+<div *ngIf="matches.length > 0">
+    <ul>
+        <li *ngFor="let match of matches">{{match}}</li>
+    </ul>
+</div>
