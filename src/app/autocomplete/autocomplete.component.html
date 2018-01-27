@@ -3,8 +3,6 @@
     <ul class="autocomplete-container" *ngIf="matches.length > 0">
         <li class="autocomplete-item"
             *ngFor="let match of matches; let i = index"
-            [ngClass]="{'selected': i === selectedIndex}">
-            {{match}}
-    </li>
+            [ngClass]="{'selected': i === selectedIndex}">{{match}}</li>
     </ul>
 </div>

@@ -23,6 +23,6 @@ export class AppComponent {
             'Venom',
         ]
     };
-    search = '';
-    title = 'Autocomplete Component';
+    search: string = '';
+    title: string = 'Autocomplete Component';
 }
