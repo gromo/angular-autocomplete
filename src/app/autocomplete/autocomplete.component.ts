@@ -20,7 +20,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
 
     matches: string[] = [];
     selectedIndex: number = -1;
-    value: string;
+    value: string = '';
 
     getMatches(value: any): string[] {
         // load items for autocomplete
@@ -57,6 +57,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
                 case 'Enter':
                     // hide autocomplete container
                     this.matches = [];
+                    this.selectedIndex = -1;
                     break;
             }
         }
