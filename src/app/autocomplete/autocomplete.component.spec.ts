@@ -24,6 +24,7 @@ describe('AutocompleteComponent', () => {
 
     it('defaults', () => {
         expect(component).toBeTruthy();
+        expect(component.isFocused).toEqual(false);
         expect(component.matches).toEqual([]);
         expect(component.minlength).toEqual(1);
         expect(component.selectedIndex).toEqual(-1);
@@ -59,6 +60,7 @@ describe('AutocompleteComponent', () => {
         expect(component.getMatches('abc')).toEqual([]);    // not found
     });
     it('getMatches: source as Function:Observable', fakeAsync(() => {
+        component.isFocused = true;
         component.minlength = 2;
         component.source = (value: string) => {
             let result = new Observable(observer => {
@@ -109,6 +111,7 @@ describe('AutocompleteComponent', () => {
         const eventKeyUp = new KeyboardEvent('keydown', {key: 'ArrowUp'});
         const input = compiled.querySelector('input[type="text"]');
 
+        component.isFocused = true;
         component.source = getSourceAsArray();
         fixture.detectChanges();
 

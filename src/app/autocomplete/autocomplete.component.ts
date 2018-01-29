@@ -19,6 +19,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
     @Input() minlength: number = 1;
     @Input() source: any;
 
+    isFocused: boolean = false;
     matches: string[] = [];
     selectedIndex: number = -1;
     value: string = '';
@@ -38,7 +39,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
             }
             if (result instanceof Observable) {
                 result.subscribe(data => {
-                    if (this.value === value) {
+                    if (this.isFocused && this.value === value) {
                         this.matches = data;
                         this.selectedIndex = -1;
                     }
@@ -53,11 +54,22 @@ export class AutocompleteComponent implements ControlValueAccessor {
         this.selectedIndex = -1;
     }
 
+    onBlur(): void {
+        this.isFocused = false;
+
+        // timeout required to handle click on matches
+        setTimeout(() => this.hideMatches(), 100);
+    }
+
     onChange(value: any): void {
         this.select(value);
         this.matches = this.getMatches(value);
         this.selectedIndex = -1;
     };
+
+    onFocus(): void {
+        this.isFocused = true;
+    }
 
     onKeyDown(event: any): void {
         if (event) {

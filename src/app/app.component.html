@@ -22,20 +22,20 @@
     <h2>Search for movie (Function:Array)</h2>
     <app-autocomplete [(ngModel)]="optionsCallback.search" [minlength]="optionsCallback.minlength" [source]="optionsCallback.source"></app-autocomplete>
 
-    <div style="left: 400px; position: absolute; top: 24px;">
+<!--    <div style="left: 400px; position: absolute; top: 24px;">
         <h2>Debug info</h2>
         <p>Search value: <input type="text" [(ngModel)]="optionsCallback.search"></p>
         <p>Min length:  <input type="text" [(ngModel)]="optionsCallback.minlength"></p>
-    </div>
+    </div>-->
 </div>
 
 <div style="height: 260px; position: relative;">
     <h2>Search for movie (Function:Observable)</h2>
     <app-autocomplete [(ngModel)]="optionsObservable.search" [minlength]="optionsObservable.minlength" [source]="optionsObservable.source"></app-autocomplete>
 
-    <div style="left: 400px; position: absolute; top: 24px;">
+<!--    <div style="left: 400px; position: absolute; top: 24px;">
         <h2>Debug info</h2>
         <p>Search value: <input type="text" [(ngModel)]="optionsObservable.search"></p>
         <p>Min length:  <input type="text" [(ngModel)]="optionsObservable.minlength"></p>
-    </div>
+    </div>-->
 </div>
